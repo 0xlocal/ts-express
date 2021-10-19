@@ -1,8 +1,10 @@
 import express from "express";
 import { createConnection } from "typeorm";
+import { PostController } from "./controller/post.controller";
 
 class Index {
   private app: express.Application;
+  private postController: PostController;
 
   constructor() {
     this.app = express();
@@ -13,6 +15,7 @@ class Index {
   public configuration() {
     this.app.set("port", process.env.PORT || 3000);
     this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: false }));
   }
 
   public async connectionDB() {
@@ -20,6 +23,10 @@ class Index {
       this.app.get("/", (req, res) => {
         res.send("Hello World!");
       });
+
+      this.postController = new PostController();
+
+      this.app.use("/api/posts/", this.postController.router);
     });
   }
 
