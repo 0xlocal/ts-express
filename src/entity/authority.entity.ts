@@ -7,7 +7,7 @@ export class Authority extends BasicEntity {
   @PrimaryGeneratedColumn({ name: "authority_id" })
   id: number;
 
-  @Column()
+  @Column({ name: "authority_name" })
   authorityName: string;
 
   @ManyToMany(() => Role, (role) => role.authorities)

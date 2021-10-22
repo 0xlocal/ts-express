@@ -15,7 +15,7 @@ export class Role extends BasicEntity {
   @PrimaryGeneratedColumn({ name: "role_id" })
   id: number;
 
-  @Column()
+  @Column({ name: "role_name" })
   roleName: string;
 
   @OneToMany(() => User, (user) => user.role)

@@ -3,9 +3,9 @@ import { BasicEntity } from "./basic.entity";
 
 @Entity("author")
 export class Author extends BasicEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: "author_id" })
   id: number;
 
-  @Column()
+  @Column({ name: "author_name" })
   authorName: string;
 }
