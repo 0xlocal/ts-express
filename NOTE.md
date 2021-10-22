@@ -1,0 +1,3 @@
+- 22/10/2021
+  - 9.38 PM
+    - added ts-node-dev, for hot reload. if did not work, remove it.
