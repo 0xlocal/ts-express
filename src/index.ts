@@ -21,7 +21,6 @@ class Index {
     this.app.use(express.json());
     this.app.use(express.urlencoded());
     this.app.use(cookieParser());
-    this.app.use(errorMiddleware);
   }
 
   public async connectionDB() {
@@ -35,6 +34,9 @@ class Index {
 
       this.app.use("/api/", this.postController.router);
       this.app.use("/api/", this.authenticationController.router);
+
+      // error handling
+      this.app.use(errorMiddleware);
     });
   }
 
