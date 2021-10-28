@@ -1,6 +1,6 @@
 import { getConnection } from "typeorm";
+import Post from "../entity/post.entity";
 import { PostRepository } from "../repository/post.repository";
-import { Post } from "../entity/post.entity";
 
 export class PostService {
   private readonly postRepository: PostRepository;
@@ -13,6 +13,12 @@ export class PostService {
     const posts = await this.postRepository.find();
 
     return posts;
+  };
+
+  public getOne = async (id: number) => {
+    const post = await this.postRepository.findOne(id);
+
+    return post;
   };
 
   public create = async (post: Post) => {
