@@ -3,6 +3,7 @@ import { createConnection } from "typeorm";
 import { PostController } from "./controller/post.controller";
 import { AuthenticationController } from "./controller/authentication.controller";
 import cookieParser from "cookie-parser";
+import errorMiddleware from "./middleware/error.middleware";
 
 class Index {
   private app: express.Application;
@@ -20,6 +21,7 @@ class Index {
     this.app.use(express.json());
     this.app.use(express.urlencoded());
     this.app.use(cookieParser());
+    this.app.use(errorMiddleware);
   }
 
   public async connectionDB() {
