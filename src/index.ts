@@ -1,10 +1,13 @@
 import express from "express";
 import { createConnection } from "typeorm";
 import { PostController } from "./controller/post.controller";
+import { AuthenticationController } from "./controller/authentication.controller";
+import cookieParser from "cookie-parser";
 
 class Index {
   private app: express.Application;
   private postController: PostController;
+  private authenticationController: AuthenticationController;
 
   constructor() {
     this.app = express();
@@ -15,7 +18,8 @@ class Index {
   public configuration() {
     this.app.set("port", process.env.PORT || 3000);
     this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(express.urlencoded());
+    this.app.use(cookieParser());
   }
 
   public async connectionDB() {
@@ -25,8 +29,10 @@ class Index {
       });
 
       this.postController = new PostController();
+      this.authenticationController = new AuthenticationController();
 
-      this.app.use("/api/posts/", this.postController.router);
+      this.app.use("/api/", this.postController.router);
+      this.app.use("/api/", this.authenticationController.router);
     });
   }
 
