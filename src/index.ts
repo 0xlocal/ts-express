@@ -4,7 +4,7 @@ import { PostController } from "./controller/post.controller";
 import { AuthenticationController } from "./controller/authentication.controller";
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./middleware/error.middleware";
-import { Routes } from "./routes";
+// import { Routes } from "./routes";
 
 class Index {
   private basePath: string = "/api";
@@ -31,15 +31,15 @@ class Index {
         res.send("Hello World!");
       });
 
-      // this.postController = new PostController();
-      // this.authenticationController = new AuthenticationController();
+      this.postController = new PostController();
+      this.authenticationController = new AuthenticationController();
 
-      // this.app.use("/api/", this.postController.router);
-      // this.app.use("/api/", this.authenticationController.router);
+      this.app.use(this.basePath, this.postController.router);
+      this.app.use(this.basePath, this.authenticationController.router);
 
-      Routes.forEach((route) => {
-        this.app.use(this.basePath, route.router);
-      });
+      // Routes.forEach((route) => {
+      //   this.app.use(this.basePath, route.router);
+      // });
 
       // error handling
       this.app.use(errorMiddleware);
