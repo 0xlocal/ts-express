@@ -6,9 +6,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { User } from "./user.entity";
-import { Authority } from "./authority.entity";
-import { BasicEntity } from "./basic.entity";
+import Authority from "./authority.entity";
+import BasicEntity from "./basic.entity";
+import User from "./user.entity";
 
 @Entity("role")
 export class Role extends BasicEntity {
@@ -35,3 +35,5 @@ export class Role extends BasicEntity {
   })
   authorities: Authority[];
 }
+
+export default Role;

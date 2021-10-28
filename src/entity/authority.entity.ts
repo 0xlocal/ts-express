@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import { BasicEntity } from "./basic.entity";
-import { Role } from "./role.entity";
+import BasicEntity from "./basic.entity";
+import Role from "./role.entity";
 
 @Entity("authority")
 export class Authority extends BasicEntity {
@@ -13,3 +13,5 @@ export class Authority extends BasicEntity {
   @ManyToMany(() => Role, (role) => role.authorities)
   roles: Role[];
 }
+
+export default Authority;

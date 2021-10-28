@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Role } from "./role.entity";
-import { BasicEntity } from "./basic.entity";
+import BasicEntity from "./basic.entity";
+import Role from "./role.entity";
 
 @Entity("user")
 export class User extends BasicEntity {
@@ -12,6 +12,9 @@ export class User extends BasicEntity {
 
   @Column()
   email: string;
+
+  @Column()
+  password: string;
 
   @Column({ name: "identity_num" })
   identityNum: number;
@@ -28,3 +31,5 @@ export class User extends BasicEntity {
   @ManyToOne(() => Role, (role) => role.users)
   role: Role;
 }
+
+export default User;

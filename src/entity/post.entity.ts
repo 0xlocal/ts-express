@@ -14,3 +14,5 @@ export class Post {
   @Column()
   author: string;
 }
+
+export default Post;
