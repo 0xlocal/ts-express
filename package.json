@@ -5,12 +5,15 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf ./dist && tsc -p .",
-    "start": "node dist/index.js",
+    "start": "DEBUG=express:* node dist/index.js",
     "start:dev": "nodemon src/index.ts"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.0.1",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "connect-timeout": "^1.9.0",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
@@ -21,7 +24,8 @@
     "typeorm": "^0.2.38"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.2",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/helmet": "^4.0.0",
