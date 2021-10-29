@@ -2,11 +2,11 @@ import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { getConnection } from "typeorm";
 import { UserRepository } from "../repository/user.repository";
-import UserWithThatEmailAlreadyExistsException from "../exception/userWithThatEmailAlreadyExistsException";
-import TokenData from "../interface/tokenData.interface";
+import UserWithThatEmailAlreadyExistsException from "../exception/user-with-that-email-already-exist.exception";
+import TokenData from "../interface/token-data.interface";
 import salt from "../config/salt";
-import DataStoredInToken from "../interface/dataStoredInToken.interface";
-import WrongCredentialsException from "../exception/wrongCredentialsException";
+import DataStoredInToken from "../interface/data-stored-in-token.interface";
+import WrongCredentialsException from "../exception/wrong-credentials.exception";
 import User from "../entity/user.entity";
 
 export class AuthenticationService {

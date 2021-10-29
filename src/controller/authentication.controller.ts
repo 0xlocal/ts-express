@@ -45,6 +45,11 @@ export class AuthenticationController implements Controller {
     }
   };
 
+  private loggingOut = (request: Request, response: Response) => {
+    response.setHeader("Set-Cookie", ["Authorization=;Max-age=0"]);
+    response.send(200);
+  };
+
   public routes() {
     this.router.post(
       `${this.path}/register`,
@@ -56,5 +61,6 @@ export class AuthenticationController implements Controller {
       validationMiddleware(User),
       this.loggingIn
     );
+    this.router.post(`${this.path}/logout`, this.loggingOut);
   }
 }
