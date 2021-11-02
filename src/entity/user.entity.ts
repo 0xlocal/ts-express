@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import BasicEntity from "./basic.entity";
 import Role from "./role.entity";
 
@@ -17,18 +23,19 @@ export class User extends BasicEntity {
   password: string;
 
   @Column({ name: "identity_num" })
-  identityNum: number;
+  identityNum: string;
 
-  @Column({ type: "date" })
-  bod: string;
+  @Column({ name: "date_of_birth", type: "date" })
+  dob: Date;
 
-  @Column()
-  pod: string;
+  @Column({ name: "place_of_birth" })
+  pob: string;
 
   @Column()
   phone: string;
 
   @ManyToOne(() => Role, (role) => role.users)
+  @JoinColumn({ name: "role_id", referencedColumnName: "id" })
   role: Role;
 }
 

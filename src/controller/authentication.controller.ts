@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
-import User from "../entity/user.entity";
 import Controller from "../interface/controller.interface";
 import validationMiddleware from "../middleware/validation.middleware";
 import { AuthenticationService } from "../service/authentication.service";
+import { UserDTO } from "../dto/user.dto";
 
 export class AuthenticationController implements Controller {
   public path: string = "/auth";
@@ -20,11 +20,11 @@ export class AuthenticationController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    const userData: User = req.body;
+    const userData: UserDTO = req.body;
     try {
-      const { cookie, newUser } = await this.authService.register(userData);
+      const { cookie, user } = await this.authService.register(userData);
       res.setHeader("Set-Cookie", [cookie]);
-      res.status(201).send(newUser);
+      res.status(201).send(user);
     } catch (error) {
       next(error);
     }
@@ -35,7 +35,7 @@ export class AuthenticationController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    const loginData: User = req.body;
+    const loginData: UserDTO = req.body;
     try {
       const { cookie, user } = await this.authService.login(loginData);
       res.setHeader("Set-Cookie", [cookie]);
@@ -53,12 +53,12 @@ export class AuthenticationController implements Controller {
   public routes() {
     this.router.post(
       `${this.path}/register`,
-      validationMiddleware(User),
+      validationMiddleware(UserDTO),
       this.registration
     );
     this.router.post(
       `${this.path}/login`,
-      validationMiddleware(User),
+      validationMiddleware(UserDTO),
       this.loggingIn
     );
     this.router.post(`${this.path}/logout`, this.loggingOut);

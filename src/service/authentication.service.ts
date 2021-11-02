@@ -8,6 +8,7 @@ import salt from "../config/salt";
 import DataStoredInToken from "../interface/data-stored-in-token.interface";
 import WrongCredentialsException from "../exception/wrong-credentials.exception";
 import User from "../entity/user.entity";
+import { UserDTO } from "../dto/user.dto";
 
 export class AuthenticationService {
   private readonly userRepository: UserRepository;
@@ -16,27 +17,46 @@ export class AuthenticationService {
     this.userRepository = getConnection().getCustomRepository(UserRepository);
   }
 
-  public async register(user: User) {
-    if (await this.userRepository.findOne({ email: user.email })) {
-      throw new UserWithThatEmailAlreadyExistsException(user.email);
+  public async register(userData: UserDTO) {
+    if (await this.userRepository.findOne({ email: userData.email })) {
+      throw new UserWithThatEmailAlreadyExistsException(userData.email);
     }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
     const newUser = this.userRepository.create({
-      ...user,
+      ...userData,
       password: hashedPassword,
     });
+
+    await this.userRepository.save(newUser);
 
     const tokenData = this.createToken(newUser);
     const cookie = this.createCookie(tokenData);
 
+    /* const user: Omit<UserDTO, "password"> = {
+      id: newUser.id,
+      name: newUser.name,
+      identityNum: newUser.identityNum,
+      email: newUser.email,
+      dob: newUser.dob,
+      pob: newUser.pob,
+      phone: newUser.phone,
+      roleID: Number(newUser["role"]),
+    }; */
+
+    // const user: Omit<UserDTO, "password"> = UserDTO.generateObject(newUser);
+
+    // removing unused properties
+    const { password, createDate, createBy, updateBy, updateDate, ...user } =
+      newUser;
+
     return {
       cookie,
-      newUser,
+      user,
     };
   }
 
-  public async login(userData: User) {
+  public async login(userData: UserDTO) {
     const user = await this.userRepository.findOne({ email: userData.email });
     if (user) {
       const isPasswordMatching = await bcrypt.compare(
