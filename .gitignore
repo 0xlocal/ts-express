@@ -37,4 +37,4 @@ lerna-debug.log*
 .vscode/extensions.json
 
 ormconfig.json
-src/config/salt.ts
+/src/config/salt.ts
