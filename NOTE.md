@@ -1,0 +1,4 @@
+- 22/10/2021
+  - added ts-node-dev, for hot reload. if did not work, remove it.
+- 28/10/2021
+  - change bcryptjs to bcrypt for speed issue.
