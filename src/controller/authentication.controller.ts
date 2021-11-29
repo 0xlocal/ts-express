@@ -24,7 +24,7 @@ export class AuthenticationController implements Controller {
     try {
       const { cookie, user } = await this.authService.register(userData);
       res.setHeader("Set-Cookie", [cookie]);
-      res.status(201).send(user);
+      res.status(201).json(user);
     } catch (error) {
       next(error);
     }
@@ -39,7 +39,7 @@ export class AuthenticationController implements Controller {
     try {
       const { cookie, user } = await this.authService.login(loginData);
       res.setHeader("Set-Cookie", [cookie]);
-      res.send(user);
+      res.json(user);
     } catch (error) {
       next(error);
     }
@@ -53,7 +53,7 @@ export class AuthenticationController implements Controller {
   public routes() {
     this.router.post(
       `${this.path}/register`,
-      validationMiddleware(UserDTO),
+      validationMiddleware(UserDTO, true),
       this.registration
     );
     this.router.post(

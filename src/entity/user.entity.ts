@@ -34,6 +34,9 @@ export class User extends BasicEntity {
   @Column()
   phone: string;
 
+  @Column({ name: "role_id" })
+  roleId: number;
+
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: "role_id", referencedColumnName: "id" })
   role: Role;

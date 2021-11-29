@@ -4,7 +4,7 @@ import Controller from "../interface/controller.interface";
 import authMiddleware from "../middleware/auth.middleware";
 import validationMiddleware from "../middleware/validation.middleware";
 import Post from "../entity/post.entity";
-import User from "../entity/user.entity";
+import { PostDTO } from "../dto/post.dto";
 
 export class PostController implements Controller {
   public path: string = "/posts";
@@ -20,34 +20,34 @@ export class PostController implements Controller {
   public index = async (req: Request, res: Response) => {
     const posts = await this.postService.index();
 
-    res.send(posts).json();
+    res.json(posts);
   };
 
   public getOne = async (req: Request, res: Response) => {
     const id = req.params["id"];
     const post = await this.postService.getOne(Number(id));
 
-    res.send(post).json();
+    res.json(post);
   };
 
   public create = async (req: Request, res: Response) => {
     const post = req["body"] as Post;
     const newPost = await this.postService.create(post);
 
-    res.send(newPost);
+    res.json(newPost);
   };
 
   public update = async (req: Request, res: Response) => {
     const post = req.body as Post;
     const id = req.params["id"];
 
-    res.send(this.postService.update(post, Number(id)));
+    res.json(this.postService.update(post, Number(id)));
   };
 
   public delete = async (req: Request, res: Response) => {
     const id = req.params["id"];
 
-    res.send(this.postService.delete(Number(id)));
+    res.json(this.postService.delete(Number(id)));
   };
 
   public routes() {
@@ -56,9 +56,9 @@ export class PostController implements Controller {
 
     this.router
       .all(`${this.path}/*`, authMiddleware)
-      .put(`${this.path}/:id`, validationMiddleware(User, true), this.update)
+      .put(`${this.path}/:id`, validationMiddleware(PostDTO, true), this.update)
       .delete(`${this.path}/:id`, this.delete)
-      .post(this.path, authMiddleware, validationMiddleware(User), this.create);
+      .post(this.path, validationMiddleware(PostDTO), this.create);
 
     // this.router.post("/", this.create);
     // this.router.put("/:id", this.update);
