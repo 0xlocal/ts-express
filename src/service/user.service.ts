@@ -15,6 +15,10 @@ export class UserService {
     return users;
   };
 
+  public getOne = async (id: number) => {
+    const user = await this.userRepository.findOne(id);
+  };
+
   public create = async (user: User) => {
     const newUser = await this.userRepository.save(user);
 

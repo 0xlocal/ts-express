@@ -9,11 +9,17 @@ import helmet from "helmet";
 import cors from "cors";
 import { Authority } from "./entity/authority.entity";
 import { Role } from "./entity/role.entity";
+import config from "./config/db.config";
+import { UserController } from "./controller/user.controller";
+import morgan from "morgan";
+import * as rfs from "rotating-file-stream";
+import path from "path";
 class Index {
   private basePath: string = "/api";
   private app: express.Application;
-  private postController: PostController;
   private authenticationController: AuthenticationController;
+  private userController: UserController;
+  private postController: PostController;
 
   constructor() {
     this.app = express();
@@ -22,7 +28,21 @@ class Index {
   }
 
   public configuration() {
+    const accessLogStream = rfs.createStream("access.log", {
+      interval: "1d",
+      path: path.join(__dirname, "log"),
+    });
+
     this.app.set("port", process.env.PORT || 3000);
+    this.app.use(
+      morgan(
+        '[:date[clf]] :remote-addr ":method :url HTTP/:http-version" :status :response-time ms',
+        {
+          stream: accessLogStream,
+        }
+      )
+    );
+    this.app.use(morgan("short"));
     this.app.use(compression());
     this.app.use(helmet());
     this.app.use(express.json());
@@ -32,17 +52,19 @@ class Index {
   }
 
   public async connectionDB() {
-    await createConnection().then(async (connection) => {
+    await createConnection(config).then(async (connection) => {
       this.app.get("/", (req, res) => {
         res.send("Hello World!");
       });
 
       // add controller here
-      this.postController = new PostController();
       this.authenticationController = new AuthenticationController();
+      this.userController = new UserController();
+      this.postController = new PostController();
 
-      this.app.use(this.basePath, this.postController.router);
       this.app.use(this.basePath, this.authenticationController.router);
+      this.app.use(this.basePath, this.userController.router);
+      this.app.use(this.basePath, this.postController.router);
 
       // error handling
       this.app.use(errorMiddleware);
@@ -54,6 +76,7 @@ class Index {
   public start() {
     this.app.listen(this.app.get("port"), () => {
       console.log(`Server is listening to port ${this.app.get("port")}`);
+      console.log(`Server Secret is ${process.env.SECRET}`);
     });
   }
 

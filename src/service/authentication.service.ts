@@ -33,19 +33,6 @@ export class AuthenticationService {
     const tokenData = this.createToken(newUser);
     const cookie = this.createCookie(tokenData);
 
-    /* const user: Omit<UserDTO, "password"> = {
-      id: newUser.id,
-      name: newUser.name,
-      identityNum: newUser.identityNum,
-      email: newUser.email,
-      dob: newUser.dob,
-      pob: newUser.pob,
-      phone: newUser.phone,
-      roleID: Number(newUser["role"]),
-    }; */
-
-    // const user: Omit<UserDTO, "password"> = UserDTO.generateObject(newUser);
-
     // removing unused properties
     const { password, createDate, createBy, updateBy, updateDate, ...user } =
       newUser;
