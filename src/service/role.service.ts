@@ -1,6 +1,7 @@
 import { getConnection } from "typeorm";
 import { RoleRepository } from "../repository/role.repository";
 import { Role } from "../entity/role.entity";
+import HttpException from "../exception/http.exception";
 
 export class RoleService {
   private readonly roleRepository: RoleRepository;
@@ -34,8 +35,10 @@ export class RoleService {
   };
 
   public delete = async (id: number) => {
-    const deletedRole = await this.roleRepository.delete(id);
+    const deletedRole = await this.roleRepository.softDelete(id);
 
-    return deletedRole;
+    if (!deletedRole.affected) {
+      throw new HttpException(404, `Role with id ${id} not found`);
+    }
   };
 }

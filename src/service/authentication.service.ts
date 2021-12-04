@@ -9,6 +9,8 @@ import DataStoredInToken from "../interface/data-stored-in-token.interface";
 import WrongCredentialsException from "../exception/wrong-credentials.exception";
 import User from "../entity/user.entity";
 import { UserDTO } from "../dto/user.dto";
+import { plainToClass } from "class-transformer";
+import { LoginDTO } from "../dto/login.dto";
 
 export class AuthenticationService {
   private readonly userRepository: UserRepository;
@@ -30,29 +32,33 @@ export class AuthenticationService {
 
     await this.userRepository.save(newUser);
 
-    const tokenData = this.createToken(newUser);
-    const cookie = this.createCookie(tokenData);
+    // * register dont need to create cookie
+    // const tokenData = this.createToken(newUser);
+    // const cookie = this.createCookie(tokenData);
 
     // removing unused properties
-    const { password, createDate, createBy, updateBy, updateDate, ...user } =
-      newUser;
+    const user = plainToClass(UserDTO, newUser, {
+      excludeExtraneousValues: true,
+    });
 
-    return {
-      cookie,
-      user,
-    };
+    return user;
   }
 
-  public async login(userData: UserDTO) {
-    const user = await this.userRepository.findOne({ email: userData.email });
-    if (user) {
+  public async login(userData: LoginDTO) {
+    const loginUser = await this.userRepository.findOne({
+      email: userData.email,
+    });
+    if (loginUser) {
       const isPasswordMatching = await bcrypt.compare(
         userData.password,
-        user.password
+        loginUser.password
       );
 
       if (isPasswordMatching) {
-        const tokenData = this.createToken(user);
+        const user = plainToClass(UserDTO, loginUser, {
+          excludeExtraneousValues: true,
+        });
+        const tokenData = this.createToken(loginUser);
         const cookie = this.createCookie(tokenData);
 
         return {

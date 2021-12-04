@@ -1,6 +1,7 @@
 import { getConnection } from "typeorm";
 import User from "../entity/user.entity";
 import { UserRepository } from "../repository/user.repository";
+import HttpException from "../exception/http.exception";
 
 export class UserService {
   private readonly userRepository: UserRepository;
@@ -32,8 +33,10 @@ export class UserService {
   };
 
   public delete = async (id: number) => {
-    const deletedUser = await this.userRepository.delete(id);
+    const deletedUser = await this.userRepository.softDelete(id);
 
-    return deletedUser;
+    if (!deletedUser.affected) {
+      throw new HttpException(404, `User with id ${id} not found`);
+    }
   };
 }
