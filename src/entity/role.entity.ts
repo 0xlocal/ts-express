@@ -1,10 +1,12 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
 } from "typeorm";
 import Authority from "./authority.entity";
 import BasicEntity from "./basic.entity";
@@ -34,6 +36,14 @@ export class Role extends BasicEntity {
     },
   })
   authorities: Authority[];
+
+  @RelationId((role: Role) => role.authorities)
+  authorityIds: number[];
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+  // @Column("boolean", { name: "f_delete", default: false })
+  // isDelete: boolean;
 }
 
 export default Role;

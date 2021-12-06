@@ -1,5 +1,6 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -40,6 +41,11 @@ export class User extends BasicEntity {
   @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: "role_id", referencedColumnName: "id" })
   role: Role;
+
+  @DeleteDateColumn()
+  deleteDate: Date;
+  // @Column("boolean", { name: "f_delete", default: false })
+  // isDelete: boolean;
 }
 
 export default User;
