@@ -13,5 +13,3 @@ export abstract class BasicEntity {
   @Column({ name: "update_by", nullable: true })
   updateBy: string;
 }
-
-export default BasicEntity;

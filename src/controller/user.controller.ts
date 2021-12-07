@@ -1,5 +1,5 @@
 import Controller from "../interface/controller.interface";
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { UserService } from "../service/user.service";
 import { User } from "../entity/user.entity";
 import authMiddleware from "../middleware/auth.middleware";
@@ -17,35 +17,41 @@ export class UserController implements Controller {
     this.routes();
   }
 
-  public index = async (req: Request, res: Response) => {
+  private index = async (req: Request, res: Response) => {
     const users = await this.userService.index();
 
     res.json(users);
   };
 
-  public getOne = async (req: Request, res: Response) => {
+  private getOne = async (req: Request, res: Response) => {
     const id = req.params.id;
     const user = await this.userService.getOne(Number(id));
 
-    return res.json(user);
+    res.json(user);
   };
 
+  // * still on consideration, should be create or not
   //   public create = async (req: Request, res: Response) => {
   //     const user = req.body as UserDTO;
   //     const newUser =
   //   };
 
-  public update = async (req: Request, res: Response) => {
+  private update = async (req: Request, res: Response) => {
     const user = req.body as User;
     const id = req.params.id;
 
     res.json(this.userService.update(user, Number(id)));
   };
 
-  public delete = async (req: Request, res: Response) => {
-    const id = req.params.id;
+  private delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
 
-    res.status(200).json();
+      await this.userService.delete(Number(id));
+      res.status(200).json();
+    } catch (error) {
+      next(error);
+    }
   };
 
   public routes() {

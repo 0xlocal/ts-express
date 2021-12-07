@@ -7,7 +7,7 @@ import TokenData from "../interface/token-data.interface";
 import salt from "../config/salt";
 import DataStoredInToken from "../interface/data-stored-in-token.interface";
 import WrongCredentialsException from "../exception/wrong-credentials.exception";
-import User from "../entity/user.entity";
+import { User } from "../entity/user.entity";
 import { UserDTO } from "../dto/user.dto";
 import { plainToClass } from "class-transformer";
 import { LoginDTO } from "../dto/login.dto";

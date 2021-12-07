@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import Authority from "./authority.entity";
-import BasicEntity from "./basic.entity";
-import User from "./user.entity";
+import { Authority } from "./authority.entity";
+import { BasicEntity } from "./basic.entity";
+import { User } from "./user.entity";
 
 @Entity("role")
 export class Role extends BasicEntity {
@@ -41,9 +41,7 @@ export class Role extends BasicEntity {
   authorityIds: number[];
 
   @DeleteDateColumn()
-  deletedAt: Date;
+  deleteDate: Date;
   // @Column("boolean", { name: "f_delete", default: false })
   // isDelete: boolean;
 }
-
-export default Role;

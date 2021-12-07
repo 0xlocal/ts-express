@@ -1,6 +1,6 @@
 import { CategoryRepository } from "../repository/category.repository";
 import { getConnection } from "typeorm";
-import Category from "../entity/category.entity";
+import { Category } from "../entity/category.entity";
 import HttpException from "../exception/http.exception";
 
 export class CategoryService {

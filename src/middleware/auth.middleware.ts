@@ -5,7 +5,7 @@ import WrongAuthenticationTokenException from "../exception/wrong-auth-token.exc
 import AuthenticationTokenMissingException from "../exception/auth-token-missing.exception";
 import { NextFunction, Response } from "express";
 import RequestWithUser from "../interface/request-with-user.interface";
-import User from "../entity/user.entity";
+import { User } from "../entity/user.entity";
 import DataStoredInToken from "../interface/data-stored-in-token.interface";
 
 async function authMiddleware(

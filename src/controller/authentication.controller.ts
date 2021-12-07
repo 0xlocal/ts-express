@@ -3,6 +3,7 @@ import Controller from "../interface/controller.interface";
 import validationMiddleware from "../middleware/validation.middleware";
 import { AuthenticationService } from "../service/authentication.service";
 import { UserDTO } from "../dto/user.dto";
+import { LoginDTO } from "../dto/login.dto";
 
 export class AuthenticationController implements Controller {
   public path: string = "/auth";
@@ -22,9 +23,9 @@ export class AuthenticationController implements Controller {
   ) => {
     const userData: UserDTO = req.body;
     try {
-      const { cookie, user } = await this.authService.register(userData);
-      res.setHeader("Set-Cookie", [cookie]);
-      res.status(201).json(user);
+      const registeredUser = await this.authService.register(userData);
+      // res.setHeader("Set-Cookie", [cookie]);
+      res.status(201).json(registeredUser);
     } catch (error) {
       next(error);
     }
@@ -35,7 +36,7 @@ export class AuthenticationController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    const loginData: UserDTO = req.body;
+    const loginData: LoginDTO = req.body;
     try {
       const { cookie, user } = await this.authService.login(loginData);
       res.setHeader("Set-Cookie", [cookie]);
@@ -58,7 +59,7 @@ export class AuthenticationController implements Controller {
     );
     this.router.post(
       `${this.path}/login`,
-      validationMiddleware(UserDTO),
+      validationMiddleware(LoginDTO),
       this.loggingIn
     );
     this.router.post(`${this.path}/logout`, this.loggingOut);

@@ -1,5 +1,5 @@
 import { getConnection } from "typeorm";
-import User from "../entity/user.entity";
+import { User } from "../entity/user.entity";
 import { UserRepository } from "../repository/user.repository";
 import HttpException from "../exception/http.exception";
 

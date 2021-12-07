@@ -1,6 +1,6 @@
 import { AuthorityRepository } from "../repository/authority.repository";
 import { getConnection } from "typeorm";
-import Authority from "../entity/authority.entity";
+import { Authority } from "../entity/authority.entity";
 import HttpException from "../exception/http.exception";
 
 export class AuthorityService {

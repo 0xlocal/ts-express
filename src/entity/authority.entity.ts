@@ -5,11 +5,10 @@ import {
   PrimaryGeneratedColumn,
   RelationId,
 } from "typeorm";
-import BasicEntity from "./basic.entity";
-import Role from "./role.entity";
+import { Role } from "./role.entity";
 
 @Entity("authority")
-export class Authority extends BasicEntity {
+export class Authority {
   @PrimaryGeneratedColumn({ name: "authority_id" })
   id: number;
 
@@ -22,5 +21,3 @@ export class Authority extends BasicEntity {
   @RelationId((authority: Authority) => authority.roles)
   roleIds: number[];
 }
-
-export default Authority;

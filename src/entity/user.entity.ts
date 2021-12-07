@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import BasicEntity from "./basic.entity";
-import Role from "./role.entity";
+import { BasicEntity } from "./basic.entity";
+import { Role } from "./role.entity";
 
 @Entity("user")
 export class User extends BasicEntity {
@@ -47,5 +47,3 @@ export class User extends BasicEntity {
   // @Column("boolean", { name: "f_delete", default: false })
   // isDelete: boolean;
 }
-
-export default User;
