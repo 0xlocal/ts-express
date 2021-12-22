@@ -7,7 +7,7 @@ export class Author extends BasicEntity {
   @PrimaryGeneratedColumn({ name: "author_id" })
   id: number;
 
-  @Column({ name: "author_name" })
+  @Column({ name: "author_name", unique: true })
   authorName: string;
 
   @OneToMany(() => Book, (book) => book.category)
