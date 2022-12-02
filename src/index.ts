@@ -1,25 +1,28 @@
 import express from "express";
-import { Connection, createConnection } from "typeorm";
-import { PostController } from "./controller/post.controller";
+import { createConnection } from "typeorm";
 import { AuthenticationController } from "./controller/authentication.controller";
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./middleware/error.middleware";
 import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
-import { Authority } from "./entity/authority.entity";
-import { Role } from "./entity/role.entity";
 import config from "./config/db.config";
 import { UserController } from "./controller/user.controller";
 import morgan from "morgan";
 import * as rfs from "rotating-file-stream";
 import path from "path";
+import { RoleController } from "./controller/role.controller";
+import { CategoryController } from "./controller/category.controller";
+import { AuthorController } from "./controller/author.controller";
+import { initialize } from "./config/initialize";
 class Index {
   private basePath: string = "/api";
   private app: express.Application;
   private authenticationController: AuthenticationController;
   private userController: UserController;
-  private postController: PostController;
+  private roleController: RoleController;
+  private categoryController: CategoryController;
+  private authorController: AuthorController;
 
   constructor() {
     this.app = express();
@@ -57,94 +60,28 @@ class Index {
         res.send("Hello World!");
       });
 
-      // add controller here
+      // * add controller here
       this.authenticationController = new AuthenticationController();
       this.userController = new UserController();
-      this.postController = new PostController();
+      this.roleController = new RoleController();
+      this.categoryController = new CategoryController();
+      this.authorController = new AuthorController();
 
       this.app.use(this.basePath, this.authenticationController.router);
       this.app.use(this.basePath, this.userController.router);
-      this.app.use(this.basePath, this.postController.router);
+      this.app.use(this.basePath, this.roleController.router);
+      this.app.use(this.basePath, this.categoryController.router);
+      this.app.use(this.basePath, this.authorController.router);
 
-      // error handling
+      // * error handling
       this.app.use(errorMiddleware);
-
-      this.initData(connection);
+      initialize(connection);
     });
   }
 
   public start() {
     this.app.listen(this.app.get("port"), () => {
       console.log(`Server is listening to port ${this.app.get("port")}`);
-      console.log(`Server Secret is ${process.env.SECRET}`);
-    });
-  }
-
-  private async initData(connection: Connection) {
-    /**
-     * Initialize data for Roles and Authorities
-     *
-     * This code will be executed when server running first time.
-     */
-
-    await connection.manager.save(Authority, {
-      authorityName: "CREATE_USER",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "READ_USER",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "UPDATE_USER",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "DELETE_USER",
-    });
-
-    await connection.manager.save(Authority, {
-      authorityName: "CREATE_ROLE",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "READ_ROLE",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "UPDATE_ROLE",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "DELETE_ROLE",
-    });
-
-    await connection.manager.save(Authority, {
-      authorityName: "CREATE_BOOK",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "READ_BOOK",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "UPDATE_BOOK",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "DELETE_BOOK",
-    });
-
-    await connection.manager.save(Authority, {
-      authorityName: "CREATE_BOOK_CATEGORY",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "READ_BOOK_CATEGORY",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "UPDATE_BOOK_CATEGORY",
-    });
-    await connection.manager.save(Authority, {
-      authorityName: "DELETE_BOOK_CATEGORY",
-    });
-
-    await connection.manager.save(Role, {
-      roleName: "ADMIN",
-    });
-
-    await connection.manager.save(Role, {
-      roleName: "MEMBER",
     });
   }
 }

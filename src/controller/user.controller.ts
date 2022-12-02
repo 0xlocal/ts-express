@@ -5,6 +5,7 @@ import { User } from "../entity/user.entity";
 import authMiddleware from "../middleware/auth.middleware";
 import validationMiddleware from "../middleware/validation.middleware";
 import { UserDTO } from "../dto/user.dto";
+import HttpException from "../exception/http.exception";
 
 export class UserController implements Controller {
   public path: string = "/users";
@@ -23,11 +24,15 @@ export class UserController implements Controller {
     res.json(users);
   };
 
-  private getOne = async (req: Request, res: Response) => {
+  private getOne = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const user = await this.userService.getOne(Number(id));
 
-    res.json(user);
+    if (user) {
+      res.json(user);
+    } else {
+      next(new HttpException(404, `User with id ${id} not found`));
+    }
   };
 
   // * still on consideration, should be create or not
@@ -36,11 +41,17 @@ export class UserController implements Controller {
   //     const newUser =
   //   };
 
-  private update = async (req: Request, res: Response) => {
-    const user = req.body as User;
-    const id = req.params.id;
+  private update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = req.body as User;
+      const id = req.params.id;
 
-    res.json(this.userService.update(user, Number(id)));
+      const updatedUser = await this.userService.update(user, Number(id));
+
+      res.json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
   };
 
   private delete = async (req: Request, res: Response, next: NextFunction) => {
@@ -56,10 +67,14 @@ export class UserController implements Controller {
 
   public routes() {
     this.router
-      .all(`${this.path}/*`, authMiddleware)
-      .get(this.path, validationMiddleware(UserDTO), this.index)
-      .get(`${this.path}/:id`, validationMiddleware(UserDTO), this.getOne)
-      .put(`${this.path}/:id`, validationMiddleware(UserDTO, true), this.update)
+      // .all(`${this.path}/*`, authMiddleware)
+      .get(this.path, this.index)
+      .get(`${this.path}/:id`, this.getOne)
+      .patch(
+        `${this.path}/:id`,
+        validationMiddleware(UserDTO, true),
+        this.update
+      )
       .delete(`${this.path}/:id`, this.delete);
   }
 }

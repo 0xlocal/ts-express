@@ -7,11 +7,16 @@
     "build": "rm -rf ./dist && tsc -p .",
     "start": "node dist/index.js",
     "start:dev": "nodemon src/index.ts",
-    "start:debug": "nodemon --inspect=0.0.0.0:9229 dist/index.js"
+    "start:debug": "nodemon --inspect=0.0.0.0:9229 dist/index.js",
+    "build:docker": "docker-compose down && yarn build && docker-compose up -d",
+    "migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -n",
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert",
+    "migration:schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
-    "class-transformer": "^0.4.0",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.13.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",

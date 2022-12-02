@@ -37,4 +37,8 @@ lerna-debug.log*
 .vscode/extensions.json
 
 ormconfig.json
+ormconfig-bak
 /src/config/salt.ts
+
+docker-compose.yml
+Dockerfile

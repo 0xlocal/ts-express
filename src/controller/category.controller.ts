@@ -81,11 +81,11 @@ export class CategoryController implements Controller {
 
   public routes() {
     this.router
-      .all(`${this.path}/*`, authMiddleware)
+      // .all(`${this.path}/*`, authMiddleware)
       .get(this.path, this.index)
       .get(`${this.path}/:id`, this.getOne)
       .post(this.path, validationMiddleware(CategoryDTO), this.create)
-      .put(
+      .patch(
         `${this.path}/:id`,
         validationMiddleware(CategoryDTO, true),
         this.update

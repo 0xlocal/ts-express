@@ -11,36 +11,62 @@ export const initialize = async (connection: Connection) => {
    * * This code will be executed when server running first time.
    */
 
-  await connection.manager.save(Authority, [
+  const userAuthorities = [
     { authorityName: "CREATE_USER" },
     { authorityName: "READ_USER" },
     { authorityName: "UPDATE_USER" },
     { authorityName: "DELETE_USER" },
-  ]);
+  ];
 
-  await connection.manager.save(Authority, [
+  const roleAuthorities = [
     { authorityName: "CREATE_ROLE" },
     { authorityName: "READ_ROLE" },
     { authorityName: "UPDATE_ROLE" },
     { authorityName: "DELETE_ROLE" },
-  ]);
+  ];
 
-  await connection.manager.save(Authority, [
+  const bookAuthorities = [
     { authorityName: "CREATE_BOOK" },
     { authorityName: "READ_BOOK" },
     { authorityName: "UPDATE_BOOK" },
     { authorityName: "DELETE_BOOK" },
-  ]);
+  ];
 
-  await connection.manager.save(Authority, [
+  const categoriesBookAuthorities = [
     { authorityName: "CREATE_BOOK_CATEGORY" },
     { authorityName: "READ_BOOK_CATEGORY" },
     { authorityName: "UPDATE_BOOK_CATEGORY" },
     { authorityName: "DELETE_BOOK_CATEGORY" },
-  ]);
+  ];
+
+  const authorBookAuthorities = [
+    { authorityName: "CREATE_BOOK_AUTHOR" },
+    { authorityName: "READ_BOOK_AUTHOR" },
+    { authorityName: "UPDATE_BOOK_AUTHOR" },
+    { authorityName: "DELETE_BOOK_AUTHOR" },
+  ];
+
+  await connection.manager.save(Authority, userAuthorities);
+
+  await connection.manager.save(Authority, roleAuthorities);
+
+  await connection.manager.save(Authority, bookAuthorities);
+
+  await connection.manager.save(Authority, categoriesBookAuthorities);
+
+  await connection.manager.save(Authority, authorBookAuthorities);
 
   await connection.manager.save(Role, [
-    { roleName: "ADMIN" },
+    {
+      roleName: "ADMIN",
+      authorities: [
+        ...userAuthorities,
+        ...roleAuthorities,
+        ...bookAuthorities,
+        ...categoriesBookAuthorities,
+        ...authorBookAuthorities,
+      ],
+    },
     { roleName: "MEMBER" },
   ]);
 

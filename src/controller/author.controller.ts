@@ -71,11 +71,11 @@ export class AuthorController implements Controller {
 
   public routes() {
     this.router
-      .all(`${this.path}/*`, authMiddleware)
+      // .all(`${this.path}/*`, authMiddleware)
       .get(this.path, this.index)
       .get(`${this.path}/:id`, this.getOne)
       .post(this.path, validationMiddleware(AuthorDTO), this.create)
-      .put(
+      .patch(
         `${this.path}/:id`,
         validationMiddleware(AuthorDTO, true),
         this.update

@@ -5,6 +5,7 @@ import { RoleService } from "../service/role.service";
 import authMiddleware from "../middleware/auth.middleware";
 import validationMiddleware from "../middleware/validation.middleware";
 import { RoleDTO } from "../dto/role.dto";
+import HttpException from "../exception/http.exception";
 
 export class RoleController implements Controller {
   public path: string = "/roles";
@@ -27,18 +28,27 @@ export class RoleController implements Controller {
     const user = req.body as Role;
   };
 
-  private getOne = async (req: Request, res: Response) => {
+  private getOne = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const role = await this.roleService.getOne(Number(id));
 
-    res.json(role);
+    if (role) {
+      res.json(role);
+    } else {
+      next(new HttpException(404, `Role with id ${id} not found`));
+    }
   };
 
-  private update = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const role = req.body as Role;
+  private update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
+      const role = req.body as Role;
+      const updatedRole = await this.roleService.update(role, Number(id));
 
-    res.json(this.roleService.update(role, Number(id)));
+      res.json(updatedRole);
+    } catch (error) {
+      next(error);
+    }
   };
 
   private delete = async (req: Request, res: Response, next: NextFunction) => {
@@ -54,11 +64,15 @@ export class RoleController implements Controller {
 
   public routes() {
     this.router
-      .all(`${this.path}/*`, authMiddleware)
+      // .all(`${this.path}/*`, authMiddleware)
       .get(this.path, this.index)
       .get(`${this.path}/:id`, this.getOne)
       .post(this.path, validationMiddleware(RoleDTO), this.create)
-      .put(`${this.path}/:id`, validationMiddleware(RoleDTO, true), this.update)
+      .patch(
+        `${this.path}/:id`,
+        validationMiddleware(RoleDTO, true),
+        this.update
+      )
       .delete(`${this.path}/:id`, this.delete);
   }
 }

@@ -2,12 +2,16 @@ import { getConnection } from "typeorm";
 import { RoleRepository } from "../repository/role.repository";
 import { Role } from "../entity/role.entity";
 import HttpException from "../exception/http.exception";
+import { AuthorityRepository } from "../repository/authority.repository";
 
 export class RoleService {
   private readonly roleRepository: RoleRepository;
+  private readonly authorityRepository: AuthorityRepository;
 
   constructor() {
     this.roleRepository = getConnection().getCustomRepository(RoleRepository);
+    this.authorityRepository =
+      getConnection().getCustomRepository(AuthorityRepository);
   }
 
   public index = async () => {
@@ -29,7 +33,19 @@ export class RoleService {
   };
 
   public update = async (role: Role, id: number) => {
-    const updatedRole = await this.roleRepository.update(id, role);
+    if (!role.id) {
+      role.id = id;
+    }
+
+    const NewAuthority = await this.authorityRepository.findByIds(
+      role.authorityIds
+    );
+
+    if (NewAuthority) {
+      role.authorities = NewAuthority;
+    }
+
+    const updatedRole = await this.roleRepository.save(role);
 
     return updatedRole;
   };
